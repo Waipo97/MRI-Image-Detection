@@ -57,7 +57,8 @@ def build_cfg(attention=True, nc=4):
 
 
 def save_cfg(name, attention=True, nc=4, out_dir=None):
-    out_dir = Path(out_dir or ROOT / "runs" / "_model_cfg")
+    import os
+    out_dir = Path(out_dir or Path(os.environ.get("MRI_RUNS_DIR") or ROOT / "runs") / "_model_cfg")
     out_dir.mkdir(parents=True, exist_ok=True)
     cfg, old2new = build_cfg(attention, nc)
     path = out_dir / f"yolov8m_{name}.yaml"      # 'yolov8m' in the name lets ultralytics detect scale 'm'
@@ -69,8 +70,9 @@ def save_cfg(name, attention=True, nc=4, out_dir=None):
 def pretrained_weights(name="yolov8m.pt"):
     """Path to COCO weights in ./weights (downloaded on first use)."""
     from ultralytics.utils.downloads import attempt_download_asset
-    p = ROOT / "weights" / name
-    p.parent.mkdir(exist_ok=True)
+    import os
+    p = Path(os.environ.get("MRI_WEIGHTS_DIR") or ROOT / "weights") / name
+    p.parent.mkdir(parents=True, exist_ok=True)
     return str(attempt_download_asset(p))
 
 

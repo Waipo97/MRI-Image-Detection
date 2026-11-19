@@ -32,3 +32,30 @@ def load_curve(runs_dir, name):
     d = pd.read_csv(f"{runs_dir}/{name}/results.csv")
     d.columns = d.columns.str.strip()
     return d
+
+
+def compare(runs_dir, data_yaml, imgsz=640, batch=16, device=None, splits=("val", "test"),
+            runs=(("baseline", "baseline_yolov8m"), ("proposed", "proposed_yolov8m"))):
+    """Evaluate every (label, run-dir) on each split. Writes comparison_<split>.csv and
+    per_class_<split>.csv into runs_dir and returns {split: (summary DataFrame, per-class DataFrame)}."""
+    from pathlib import Path
+    runs_dir = Path(runs_dir)
+    out = {}
+    for split in splits:
+        sums, cls = {}, {}
+        for label, d in runs:
+            s, c = evaluate(runs_dir / d / "weights" / "best.pt", label, data_yaml, runs_dir,
+                            imgsz, batch, split, device)
+            sums[label], cls[label] = s, c
+        tab = pd.DataFrame({k: v for k, v in sums.items()})
+        labels = [l for l, _ in runs]
+        if len(labels) == 2:
+            tab["Change"] = tab[labels[1]] - tab[labels[0]]
+        tab.round(4).to_csv(runs_dir / f"comparison_{split}.csv")
+        pc = None
+        for l in labels:
+            c = cls[l].rename(columns=lambda k, l=l: k if k == "Class" else f"{k} ({l})")
+            pc = c if pc is None else pc.merge(c, on="Class")
+        pc.round(4).to_csv(runs_dir / f"per_class_{split}.csv", index=False)
+        out[split] = (tab, pc)
+    return out

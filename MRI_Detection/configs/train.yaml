@@ -15,7 +15,7 @@ train:
   workers: 2
   device: auto            # auto -> GPU 0 if CUDA is available, else CPU
   deterministic: true
-  cache: false
+  cache: ram              # ~2k small MRI slices fit in RAM; much faster epochs on Colab
   multi_scale: false
   # optimizer / schedule
   optimizer: AdamW
@@ -48,9 +48,10 @@ train:
 
 # QUICK_TEST overrides (laptop / CPU sanity run)
 quick:
-  epochs: 150
+  epochs: 3
   imgsz: 320
   batch: 8
   fraction: 0.25
   patience: 40
   workers: 0
+  cache: false
