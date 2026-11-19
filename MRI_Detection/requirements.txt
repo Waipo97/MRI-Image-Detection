@@ -1,0 +1,13 @@
+# MRI_Detection - Python 3.10 - 3.12 recommended (3.13 works for data/model code; check torch wheels for your platform)
+ultralytics==8.3.40        # pinned: the custom layers hook into this version's model parser
+torch>=2.1
+torchvision>=0.16
+numpy
+pandas
+pyyaml
+opencv-python
+Pillow
+matplotlib
+tqdm
+jupyter
+ipykernel

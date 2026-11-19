@@ -1,0 +1,4 @@
+image,folder,n_boxes,issue,split
+glioma/Tr-gl_0250.jpg,glioma,0,empty_label,
+glioma/Tr-gl_0256.jpg,glioma,0,empty_label,
+notumor/Tr-no_0559.jpg,notumor,1,class_mismatch,
