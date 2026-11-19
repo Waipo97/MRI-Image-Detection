@@ -4,6 +4,22 @@ Brain-tumour detection in MRI with **YOLOv8m** and an improved variant (**residu
 
 Dataset: Kaggle *Labeled MRI Brain Tumor Dataset* (`archive.zip`; classes: pituitary, meningioma, glioma, notumor).
 
+
+## Run on Google Colab (recommended for the full experiment)
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Waipo97/MRI-Image-Detection/blob/main/MRI_Detection/MRI_Detection_Colab.ipynb)
+
+1. Put `archive.zip` in Google Drive at `MyDrive/MRI_Detection/archive.zip`.
+2. Open the notebook above, choose `Runtime -> Change runtime type -> T4 GPU`, then `Runtime -> Run all`.
+3. Everything (checkpoints, tables, plots, split manifests) is written to `MyDrive/MRI_Detection/runs/`.
+
+The notebook installs the pinned `ultralytics`, builds the cleaned YOLO dataset on Colab's fast local disk, trains the baseline and the improved model with the same `configs/train.yaml`, and evaluates both on val and test.
+**Disconnects are safe:** re-run all cells; a finished run is skipped and an interrupted one resumes from `last.pt`.
+Set `QUICK_TEST = True` in the first cell to check the whole pipeline in a few minutes before the real run.
+
+The same pipeline from a terminal: `python scripts/run.py all` (or `prepare`, `baseline`, `improved`, `evaluate`; add `--quick` for a sanity run).
+Paths can be redirected with `MRI_WORK_DIR`, `MRI_RUNS_DIR`, `MRI_RAW_ZIP`, `MRI_WEIGHTS_DIR` (this is how the Colab notebook keeps data on local disk and results on Drive).
+
 ## Quick start (VS Code)
 
 1. Open the `MRI_Detection` folder in VS Code (install the recommended Python + Jupyter extensions).
@@ -28,7 +44,7 @@ Dataset: Kaggle *Labeled MRI Brain Tumor Dataset* (`archive.zip`; classes: pitui
 | `06_evaluation` | P / R / F1 / mAP, per-class, curves, confusion matrices, qualitative examples | yes |
 | `07_ablation_optional` | attention only vs fusion only vs both | yes |
 
-Each training notebook has `QUICK_TEST = True` (3 epochs, 320 px, 25% of train) to confirm the pipeline runs on a CPU. The real experiment uses `QUICK_TEST = False` on a GPU (150 epochs, 640 px).
+Each training notebook has `QUICK_TEST = True` (3 epochs, 320 px, 25% of train) to confirm the pipeline runs on a CPU. The real experiment uses `QUICK_TEST = False` on a GPU (up to 150 epochs, early stopping patience 40, 640 px).
 
 ## Layout
 
@@ -36,7 +52,8 @@ Each training notebook has `QUICK_TEST = True` (3 epochs, 320 px, 25% of train) 
 configs/train.yaml        one config shared by baseline and improved model
 src/mri_detection/        data.py  modules.py  models.py  train.py  evaluate.py  viz.py  config.py
 notebooks/                the seven steps above
-scripts/run.py            same pipeline from the command line
+scripts/run.py            same pipeline from the command line (prepare | baseline | improved | evaluate | all)
+MRI_Detection_Colab.ipynb one-click Colab version (Drive for data + results, resumable)
 data/raw/                 put archive.zip here          data/yolo/  generated
 runs/                     training outputs              weights/    COCO yolov8m.pt (auto-download)
 ```
