@@ -15,7 +15,6 @@ Dataset: Kaggle *Labeled MRI Brain Tumor Dataset* (`archive.zip`; classes: pitui
 
 The notebook installs the pinned `ultralytics`, builds the cleaned YOLO dataset on Colab's fast local disk, trains the baseline and the improved model with the same `configs/train.yaml`, and evaluates both on val and test.
 **Disconnects are safe:** re-run all cells; a finished run is skipped and an interrupted one resumes from `last.pt`.
-Set `QUICK_TEST = True` in the first cell to check the whole pipeline in a few minutes before the real run.
 
 The same pipeline from a terminal: `python scripts/run.py all` (or `prepare`, `baseline`, `improved`, `evaluate`; add `--quick` for a sanity run).
 Paths can be redirected with `MRI_WORK_DIR`, `MRI_RUNS_DIR`, `MRI_RAW_ZIP`, `MRI_WEIGHTS_DIR` (this is how the Colab notebook keeps data on local disk and results on Drive).
