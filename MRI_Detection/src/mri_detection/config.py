@@ -15,10 +15,8 @@ def load_config(path="configs/train.yaml", quick=False):
 
 
 def get_paths(cfg):
-    """Where things live. Defaults are inside the repo (VS Code). On Colab set
-        MRI_WORK_DIR  -> fast local disk for the raw zip / extracted data / YOLO dataset (e.g. /content/mri_work)
-        MRI_RUNS_DIR  -> persistent folder for runs and weights (e.g. a Google Drive folder)
-    so that training results survive a disconnected session."""
+    """Folders used by the pipeline. By default everything stays inside the repo.
+    On Colab, MRI_WORK_DIR points to local disk (fast) and MRI_RUNS_DIR to Drive (kept after disconnect)."""
     d = cfg["dataset"]
     work = os.environ.get("MRI_WORK_DIR")
     runs = os.environ.get("MRI_RUNS_DIR")

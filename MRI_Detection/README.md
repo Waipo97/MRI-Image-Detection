@@ -5,19 +5,17 @@ Brain-tumour detection in MRI with **YOLOv8m** and an improved variant (**residu
 Dataset: Kaggle *Labeled MRI Brain Tumor Dataset* (`archive.zip`; classes: pituitary, meningioma, glioma, notumor).
 
 
-## Run on Google Colab (recommended for the full experiment)
+## Run on Google Colab
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Waipo97/MRI-Image-Detection/blob/colab-ready/MRI_Detection/MRI_Detection_Colab.ipynb)
 
-1. Put `archive.zip` in Google Drive at `MyDrive/MRI_Detection/archive.zip`.
-2. Open the notebook above, choose `Runtime -> Change runtime type -> T4 GPU`, then `Runtime -> Run all`.
-3. Everything (checkpoints, tables, plots, split manifests) is written to `MyDrive/MRI_Detection/runs/`.
+1. Upload `archive.zip` to your Google Drive.
+2. Open the notebook, set the runtime to T4 GPU and run all cells.
+3. Checkpoints, tables, plots and the split files are saved in `MyDrive/MRI_Detection/runs/`.
 
-The notebook installs the pinned `ultralytics`, builds the cleaned YOLO dataset on Colab's fast local disk, trains the baseline and the improved model with the same `configs/train.yaml`, and evaluates both on val and test.
-**Disconnects are safe:** re-run all cells; a finished run is skipped and an interrupted one resumes from `last.pt`.
+The notebook installs ultralytics, prepares the dataset on Colab's local disk, trains the baseline and the improved model with the same `configs/train.yaml`, and evaluates both on val and test. If Colab disconnects, run the cells again: a finished training is skipped and an interrupted one continues from `last.pt`.
 
-The same pipeline from a terminal: `python scripts/run.py all` (or `prepare`, `baseline`, `improved`, `evaluate`; add `--quick` for a sanity run).
-Paths can be redirected with `MRI_WORK_DIR`, `MRI_RUNS_DIR`, `MRI_RAW_ZIP`, `MRI_WEIGHTS_DIR` (this is how the Colab notebook keeps data on local disk and results on Drive).
+From a terminal the same steps are `python scripts/run.py all` (or `prepare`, `baseline`, `improved`, `evaluate`). The folders can be changed with the environment variables `MRI_WORK_DIR`, `MRI_RUNS_DIR`, `MRI_RAW_ZIP` and `MRI_WEIGHTS_DIR`.
 
 ## Quick start (VS Code)
 

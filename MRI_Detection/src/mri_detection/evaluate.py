@@ -36,8 +36,8 @@ def load_curve(runs_dir, name):
 
 def compare(runs_dir, data_yaml, imgsz=640, batch=16, device=None, splits=("val", "test"),
             runs=(("baseline", "baseline_yolov8m"), ("proposed", "proposed_yolov8m"))):
-    """Evaluate every (label, run-dir) on each split. Writes comparison_<split>.csv and
-    per_class_<split>.csv into runs_dir and returns {split: (summary DataFrame, per-class DataFrame)}."""
+    """Evaluate each (label, run folder) on every split, save comparison_<split>.csv and
+    per_class_<split>.csv in runs_dir, and return {split: (summary, per-class)}."""
     from pathlib import Path
     runs_dir = Path(runs_dir)
     out = {}

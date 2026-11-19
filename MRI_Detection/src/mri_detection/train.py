@@ -1,7 +1,7 @@
 """Training entry points. Baseline and improved models use exactly the same training arguments.
 
-Both are resume-safe (important on Colab, where sessions disconnect): if <runs>/<name>/weights/last.pt
-exists and the run has no DONE marker, training resumes from it; if DONE exists, training is skipped."""
+Runs can be resumed: if last.pt exists but there is no DONE file, training continues from it,
+and a run with a DONE file is skipped. This matters on Colab, where sessions get disconnected."""
 from pathlib import Path
 from ultralytics import YOLO
 from . import modules as cm
@@ -16,7 +16,7 @@ def _state(runs_dir, name):
 
 
 def _resume(last):
-    """Resume from last.pt. Returns False if that run had in fact already finished."""
+    """Continue training from last.pt. If that run was already finished, just say so."""
     try:
         YOLO(str(last)).train(resume=True)
     except AssertionError as e:
@@ -52,7 +52,7 @@ def train_improved(cfg, data_yaml, runs_dir, name="proposed_yolov8m", nc=4,
     try:
         if last.exists():
             print(f"[resume] {name} from {last}")
-            _resume(last)                            # no transfer callback: it would overwrite trained weights
+            _resume(last)                            # no transfer callback here, it would overwrite the trained weights
         else:
             weights = weights or pretrained_weights()
             path, old2new = save_cfg(name, attention=attention, nc=nc)

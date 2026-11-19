@@ -15,7 +15,7 @@ train:
   workers: 2
   device: auto            # auto -> GPU 0 if CUDA is available, else CPU
   deterministic: true
-  cache: ram              # ~2k small MRI slices fit in RAM; much faster epochs on Colab
+  cache: ram              # the images fit in RAM, epochs run faster
   multi_scale: false
   # optimizer / schedule
   optimizer: AdamW

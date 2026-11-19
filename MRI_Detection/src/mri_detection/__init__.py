@@ -2,8 +2,7 @@
 for brain-tumour detection in MRI."""
 import os as _os
 
-# torch >= 2.6 defaults to weights_only=True, which cannot unpickle ultralytics 8.3.40 checkpoints
-# (or our custom layers). Must be set before the first torch.load call.
+# torch 2.6+ loads checkpoints with weights_only=True, which breaks ultralytics 8.3.40 and our custom layers
 _os.environ.setdefault("TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD", "1")
 
 import numpy as _np

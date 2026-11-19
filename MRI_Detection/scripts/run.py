@@ -1,14 +1,13 @@
-"""Run the pipeline from the command line (also what the Colab notebook calls):
+"""Run the pipeline from the command line (the Colab notebook uses this too):
     python scripts/run.py prepare
     python scripts/run.py baseline [--quick]
     python scripts/run.py improved [--quick]
     python scripts/run.py evaluate [--quick]
-    python scripts/run.py all      [--quick]     # prepare -> baseline -> improved -> evaluate
+    python scripts/run.py all      [--quick]     # all four steps in order
 
-Paths: defaults are inside the repo. Override with environment variables (used on Colab):
-    MRI_WORK_DIR  local fast disk for data      MRI_RUNS_DIR  persistent folder (Drive) for runs
-    MRI_RAW_ZIP   path to archive.zip           MRI_WEIGHTS_DIR  where COCO yolov8m.pt is cached
-Training is resumable: re-running a step continues from last.pt or skips a finished run.
+Folders default to the ones inside the repo. On Colab they are set with environment variables:
+MRI_WORK_DIR (data), MRI_RUNS_DIR (runs), MRI_RAW_ZIP (zip path), MRI_WEIGHTS_DIR (yolov8m.pt).
+Running a training step again resumes it, or skips it if it already finished.
 """
 import argparse, sys
 from pathlib import Path
@@ -20,7 +19,7 @@ from mri_detection import data, train, evaluate
 
 ap = argparse.ArgumentParser()
 ap.add_argument("step", choices=["prepare", "baseline", "improved", "evaluate", "all"])
-ap.add_argument("--quick", action="store_true", help="3 epochs, 320 px, 25%% of train (sanity run)")
+ap.add_argument("--quick", action="store_true", help="3 epochs, 320 px, 25%% of train, only to check that things run")
 ap.add_argument("--epochs", type=int, help="override train.epochs")
 a = ap.parse_args()
 
