@@ -9,20 +9,26 @@ IMG_EXT = {".jpg", ".jpeg", ".png", ".bmp", ".tif", ".tiff"}
 
 # --------------------------------------------------------------------------- extract / scan
 def extract_zip(zip_path, raw_dir):
-    """Extract archive.zip into raw_dir (skipped if already extracted). Returns the dataset root
-    (the folder whose sub-folders are the class folders)."""
-    raw_dir = Path(raw_dir)
+    """Extract archive.zip into raw_dir. Skipped if this same zip was already extracted.
+    Returns the dataset root (the folder whose sub-folders are the class folders)."""
+    zip_path, raw_dir = Path(zip_path), Path(raw_dir)
     marker = raw_dir / "_extracted"
-    if not marker.exists():
+    stamp = str(zip_path.stat().st_size)             # a different zip means the old extraction is stale
+    if not marker.exists() or marker.read_text() != stamp:
+        for old in raw_dir.iterdir():
+            if old.resolve() != zip_path.resolve():
+                shutil.rmtree(old) if old.is_dir() else old.unlink()
         with zipfile.ZipFile(zip_path) as z:
             z.extractall(raw_dir)
-        marker.write_text("ok")
+        marker.write_text(stamp)
     return find_dataset_root(raw_dir)
 
 
 def find_dataset_root(raw_dir):
+    """The folder whose sub-folders all contain images (the class folders), searched up to 3 levels deep."""
     raw_dir = Path(raw_dir)
-    for d in [raw_dir, *sorted(p for p in raw_dir.iterdir() if p.is_dir())]:
+    for d in [raw_dir, *sorted(p for p in raw_dir.rglob("*") if p.is_dir() and "__MACOSX" not in p.parts
+                               and len(p.relative_to(raw_dir).parts) <= 3)]:
         subs = [s for s in d.iterdir() if s.is_dir()]
         if subs and all(any(f.suffix.lower() in IMG_EXT for f in s.iterdir()) for s in subs):
             return d
