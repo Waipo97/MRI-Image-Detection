@@ -7,7 +7,7 @@ Dataset: Kaggle *Labeled MRI Brain Tumor Dataset* (`archive.zip`; classes: pitui
 
 ## Run on Google Colab (recommended for the full experiment)
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Waipo97/MRI-Image-Detection/blob/main/MRI_Detection/MRI_Detection_Colab.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Waipo97/MRI-Image-Detection/blob/colab-ready/MRI_Detection/MRI_Detection_Colab.ipynb)
 
 1. Put `archive.zip` in Google Drive at `MyDrive/MRI_Detection/archive.zip`.
 2. Open the notebook above, choose `Runtime -> Change runtime type -> T4 GPU`, then `Runtime -> Run all`.
