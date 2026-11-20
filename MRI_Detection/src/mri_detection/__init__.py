@@ -6,4 +6,4 @@ import numpy as _np
 if not hasattr(_np, "trapz"):
     _np.trapz = _np.trapezoid
 
-from .config import ROOT, load_config  # noqa: E402,F401
+from .config import ROOT, load_config, runs_dir  # noqa: E402,F401

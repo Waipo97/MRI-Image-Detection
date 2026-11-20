@@ -7,10 +7,17 @@ ROOT = Path(__file__).resolve().parents[2]          # MRI_Detection/
 def load_config(path="configs/train.yaml", quick=False):
     """Load the shared config. quick=True applies the small 'quick' overrides (CPU sanity run)."""
     cfg = yaml.safe_load(open(ROOT / path))
-    if quick:
-        cfg["train"].update(cfg["quick"])
     cfg["quick_mode"] = quick
+    q = dict(cfg.pop("quick"))
+    cfg["quick_subset"] = q.pop("subset", 0.25)       # stratified share of train (not an ultralytics arg)
+    if quick:
+        cfg["train"].update(q)
     return cfg
+
+
+def runs_dir(cfg):
+    """runs/ for real experiments, runs/quick/ for smoke tests, so they never mix in one results.csv."""
+    return ROOT / "runs" / ("quick" if cfg.get("quick_mode") else "")
 
 
 def resolve_device(device="auto"):

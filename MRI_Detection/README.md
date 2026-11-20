@@ -28,7 +28,7 @@ Dataset: Kaggle *Labeled MRI Brain Tumor Dataset* (`archive.zip`; classes: pitui
 | `06_evaluation` | P / R / F1 / mAP, per-class, curves, confusion matrices, qualitative examples | yes |
 | `07_ablation_optional` | attention only vs fusion only vs both | yes |
 
-Each training notebook has `QUICK_TEST = True` (3 epochs, 320 px, 25% of train) to confirm the pipeline runs on a CPU. The real experiment uses `QUICK_TEST = False` on a GPU (150 epochs, 640 px).
+Each training notebook has `QUICK_TEST = True` (3 epochs, 320 px, a class-stratified 25% of train, outputs in `runs/quick/`) to confirm the pipeline runs on a CPU. It is a smoke test: its metrics mean nothing. The real experiment uses `QUICK_TEST = False` on a GPU (150 epochs, 640 px, `lr0` 1e-4).
 
 ## Layout
 
@@ -52,7 +52,7 @@ runs/                     training outputs              weights/    COCO yolov8m
 
 ## Fair comparison
 
-Both models use the same split, seed, image size, optimiser, loss gains and **explicit** geometric augmentation (rotation +/-7 deg, translate 3%, scale 8%, horizontal flip; no mosaic, mixup, copy-paste or colour changes). Your two earlier notebooks trained the baseline with Ultralytics defaults (100 epochs) and the improved model with the explicit setup (150 epochs), which is not a controlled comparison; here both use `configs/train.yaml`.
+Both models use the same split, seed, image size, optimiser, loss gains and **explicit** geometric augmentation (rotation +/-7 deg, translate 3%, scale 8%, horizontal flip; no mosaic, mixup, copy-paste or colour changes). An earlier version trained the baseline with Ultralytics defaults (100 epochs) and the improved model with the explicit setup (150 epochs), which is not a controlled comparison; here both use `configs/train.yaml`.
 
 ## Improved model
 

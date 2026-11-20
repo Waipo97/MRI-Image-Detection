@@ -143,6 +143,42 @@ def build_yolo_dataset(df, names, yolo_dir):
     return yolo_dir / "data.yaml"
 
 
+def write_quick_yaml(yolo_dir, fraction=0.25, seed=0):
+    """Smoke-test dataset: a CLASS-STRATIFIED subset of the train split (val/test stay complete).
+    Written as <yolo_dir>/train_quick.txt + data_quick.yaml; returns the yaml path.
+    Why not ultralytics' `fraction`? It keeps the first N files in alphabetical order. Class folders sort
+    by file name (Tr-gl, Tr-me, Tr-no, Tr-pi), so fraction=0.25 kept only glioma + some meningioma and the
+    model never saw pituitary or notumor."""
+    yolo_dir = Path(yolo_dir)
+    base = yaml.safe_load(open(yolo_dir / "data.yaml"))
+    by_class = collections.defaultdict(list)
+    for img in sorted((yolo_dir / "train" / "images").iterdir()):
+        if img.suffix.lower() not in IMG_EXT:
+            continue
+        lbl = yolo_dir / "train" / "labels" / (img.stem + ".txt")
+        txt = lbl.read_text().split() if lbl.exists() else []
+        by_class[txt[0] if txt else "none"].append(img)
+    rng, keep = random.Random(seed), []
+    for _, imgs in sorted(by_class.items()):
+        keep += rng.sample(imgs, max(1, round(len(imgs) * fraction)))
+    keep.sort()
+    (yolo_dir / "train_quick.txt").write_text("\n".join(str(p.resolve()) for p in keep) + "\n")
+    cfg = dict(base, train=str((yolo_dir / "train_quick.txt").resolve()))
+    out = yolo_dir / "data_quick.yaml"
+    yaml.safe_dump(cfg, open(out, "w"), sort_keys=False)
+    print(f"[quick] {len(keep)} of {sum(map(len, by_class.values()))} train images, per class id: "
+          f"{ {k: round(len(v) * fraction) for k, v in sorted(by_class.items())} }")
+    return out
+
+
+def training_yaml(cfg, yolo_dir):
+    """data.yaml for training: the full one, or the stratified quick subset when cfg was loaded with quick=True."""
+    yolo_dir = Path(yolo_dir)
+    if cfg.get("quick_mode"):
+        return write_quick_yaml(yolo_dir, cfg["quick_subset"], cfg["seed"])
+    return yolo_dir / "data.yaml"
+
+
 def split_summary(df, names):
     """Images and boxes per split and class."""
     rows = []
